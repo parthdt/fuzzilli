@@ -38,13 +38,26 @@ let package = Package(
                 dependencies: [],
                 cSettings: [.unsafeFlags(["-O3"])],     // Using '-c release' when building uses '-O2', so '-O3' provides a performance gain
                 linkerSettings: [.linkedLibrary("rt", .when(platforms: [.linux]))]),
+        
+        .target(    
+                name:"libpc",
+                path:"Sources/libpc",
+                swiftSettings: [
+                    .unsafeFlags(["-I/home/dresden/fuzzing/fuzzilli/Sources/libpc","-Xcc","-fmodule-map-file=/home/dresden/fuzzing/fuzzilli/Sources/libpc/parth_corpusFFI.modulemap"]),  // Adjust paths as necessary
+                ],
+                linkerSettings: [
+                    .unsafeFlags(["-L/home/dresden/fuzzing/fuzzilli/Sources/libpc", "-lparth_corpus"])]
+
+        ),
 
         .target(name: "Fuzzilli",
                 dependencies: [
                     .product(name: "SwiftProtobuf", package: "swift-protobuf"),
                     "libsocket",
                     "libreprl",
-                    "libcoverage"],
+                    "libcoverage",
+                    "libpc"],
+
                 exclude: [
                     "Protobuf/operations.proto",
                     "Protobuf/program.proto",
@@ -54,16 +67,36 @@ let package = Package(
                 resources: [
                     // The ast.proto file is required by the node.js parser
                     .copy("Protobuf/ast.proto"),
-                    .copy("Compiler/Parser")]),
+                    .copy("Compiler/Parser")],
+               swiftSettings: [
+                    .unsafeFlags(["-I/home/dresden/fuzzing/fuzzilli/Sources/libpc","-Xcc","-fmodule-map-file=/home/dresden/fuzzing/fuzzilli/Sources/libpc/parth_corpusFFI.modulemap"]),  // Adjust paths as necessary
+                ],
+                linkerSettings: [
+                    .linkedLibrary("parth_corpus"),
+                    .unsafeFlags(["-L/home/dresden/fuzzing/fuzzilli/Sources/libpc", "-lpc"])]),
 
         .target(name: "REPRLRun",
                 dependencies: ["libreprl"]),
 
-        .target(name: "FuzzilliCli",
-                dependencies: ["Fuzzilli"]),
+    .target(name: "FuzzilliCli",
+                dependencies: ["Fuzzilli"],
+                swiftSettings: [
+                    .unsafeFlags(["-I/home/dresden/fuzzing/fuzzilli/Sources/libpc","-Xcc","-fmodule-map-file=/home/dresden/fuzzing/fuzzilli/Sources/libpc/parth_corpusFFI.modulemap"]),  // Adjust paths as necessary
+                ],
+                linkerSettings: [
+                    .linkedLibrary("parth_corpus"),
+                    .unsafeFlags(["-L/home/dresden/fuzzing/fuzzilli/Sources/libpc", "-lpc"])]
+                ),
 
         .target(name: "FuzzILTool",
-                dependencies: ["Fuzzilli"]),
+                dependencies: ["Fuzzilli"],
+                swiftSettings: [
+                    .unsafeFlags(["-I/home/dresden/fuzzing/fuzzilli/Sources/libpc","-Xcc","-fmodule-map-file=/home/dresden/fuzzing/fuzzilli/Sources/libpc/parth_corpusFFI.modulemap"]),  // Adjust paths as necessary
+                ],
+                linkerSettings: [
+                    // .linkedLibrary("parth_corpus"),
+                    .unsafeFlags(["-L/home/dresden/fuzzing/fuzzilli/Sources/libpc", "-lpc"])]
+                ),
 
         .testTarget(name: "FuzzilliTests",
                     dependencies: ["Fuzzilli"],
