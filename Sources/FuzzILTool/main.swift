@@ -183,9 +183,26 @@ else if args.has("--compile") {
         exit(-1)
     }
 
-    print(fuzzILLifter.lift(program))
-    print()
-    print(jsLifter.lift(program))
+    // let fuzzer = makeMockFuzzer(config: Configuration(logLevel: .warning, enableInspection: true), environment: JavaScriptEnvironment())
+    // let mutator2 = CodeGenMutator()
+    // let mutator = InputMutator(isTypeAware: true)
+    // let mutatedProgram = mutator.mutate(program, for: fuzzer)!
+    // let mutatedProgram2 = mutator2.mutate(mutatedProgram, for: fuzzer)!
+    // print("Original")
+    // print(fuzzILLifter.lift(program))
+    // print()
+    // print(jsLifter.lift(program))
+    // print()
+
+    // print("Mutated - Input")
+    // print(fuzzILLifter.lift(mutatedProgram))
+    // print()
+    // print(jsLifter.lift(mutatedProgram))
+
+    // print("Mutated - Code Gen")
+    // print(fuzzILLifter.lift(mutatedProgram2))
+    // print()
+    // print(jsLifter.lift(mutatedProgram2))
 
     do {
         let outputPath = URL(fileURLWithPath: path).deletingPathExtension().appendingPathExtension("fzil")
