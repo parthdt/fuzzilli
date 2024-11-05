@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import Foundation
-import libpc
+import libafl
 
 let filteredFunctionsForCompiler = [
     "assert*",
