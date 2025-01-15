@@ -74,7 +74,7 @@ let package = Package(
                 ],
                 linkerSettings: [
                     .linkedLibrary("libafl_fuzzilli"),
-                    .unsafeFlags(["-L\(path)/Sources/libafl", "-lfs"])]),
+                    .unsafeFlags(["-L\(path)/Sources/libafl", "-lafl"])]),
 
         .target(name: "REPRLRun",
                 dependencies: ["libreprl"]),
@@ -86,7 +86,7 @@ let package = Package(
                 ],
                 linkerSettings: [
                     .linkedLibrary("libafl_fuzzilli"),
-                    .unsafeFlags(["-L\(path)/Sources/libafl", "-lfs"])]
+                    .unsafeFlags(["-L\(path)/Sources/libafl", "-lafl"])]
                 ),
 
         .target(name: "FuzzILTool",
@@ -96,7 +96,7 @@ let package = Package(
                 ],
                 linkerSettings: [
                     // .linkedLibrary("libafl_fuzzilli"),
-                    .unsafeFlags(["-L\(path)/Sources/libafl", "-lfs"])]
+                    .unsafeFlags(["-L\(path)/Sources/libafl", "-lafl"])]
                 ),
 
         .testTarget(name: "FuzzilliTests",

@@ -450,28 +450,27 @@ fileprivate struct FfiConverterData: FfiConverterRustBuffer {
 
 
 
-public protocol FzilOnDiskCorpusBytesProtocol : AnyObject {
+public protocol LibAflObjectProtocol : AnyObject {
     
-    func addInput(input: Data) 
+    /**
+     * Add a new input to the corpus.
+     */
+    func addInput(inputData: Data) 
     
     func count()  -> UInt64
     
     func firstIndex()  -> UInt64
     
-    func getElement(corpusId: UInt64)  -> Data
-    
-    func getRandomElement()  -> Data
-    
-    func ids() 
+    func getElement(id: UInt64)  -> Data
     
     func lastIndex()  -> UInt64
     
-    func nextFree() 
+    func suggestNextInput()  -> Data
     
 }
 
-open class FzilOnDiskCorpusBytes:
-    FzilOnDiskCorpusBytesProtocol {
+open class LibAflObject:
+    LibAflObjectProtocol {
     fileprivate let pointer: UnsafeMutableRawPointer!
 
     /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
@@ -496,12 +495,14 @@ open class FzilOnDiskCorpusBytes:
     }
 
     public func uniffiClonePointer() -> UnsafeMutableRawPointer {
-        return try! rustCall { uniffi_libafl_fuzzilli_fn_clone_fzilondiskcorpusbytes(self.pointer, $0) }
+        return try! rustCall { uniffi_libafl_fuzzilli_fn_clone_libaflobject(self.pointer, $0) }
     }
-public convenience init() {
+public convenience init(corpusDir: String, shmemKey: String) {
     let pointer =
         try! rustCall() {
-    uniffi_libafl_fuzzilli_fn_constructor_fzilondiskcorpusbytes_new($0
+    uniffi_libafl_fuzzilli_fn_constructor_libaflobject_new(
+        FfiConverterString.lower(corpusDir),
+        FfiConverterString.lower(shmemKey),$0
     )
 }
     self.init(unsafeFromRawPointer: pointer)
@@ -512,84 +513,75 @@ public convenience init() {
             return
         }
 
-        try! rustCall { uniffi_libafl_fuzzilli_fn_free_fzilondiskcorpusbytes(pointer, $0) }
+        try! rustCall { uniffi_libafl_fuzzilli_fn_free_libaflobject(pointer, $0) }
     }
 
     
 
     
-open func addInput(input: Data) {try! rustCall() {
-    uniffi_libafl_fuzzilli_fn_method_fzilondiskcorpusbytes_add_input(self.uniffiClonePointer(),
-        FfiConverterData.lower(input),$0
+    /**
+     * Add a new input to the corpus.
+     */
+open func addInput(inputData: Data) {try! rustCall() {
+    uniffi_libafl_fuzzilli_fn_method_libaflobject_add_input(self.uniffiClonePointer(),
+        FfiConverterData.lower(inputData),$0
     )
 }
 }
     
 open func count() -> UInt64 {
     return try!  FfiConverterUInt64.lift(try! rustCall() {
-    uniffi_libafl_fuzzilli_fn_method_fzilondiskcorpusbytes_count(self.uniffiClonePointer(),$0
+    uniffi_libafl_fuzzilli_fn_method_libaflobject_count(self.uniffiClonePointer(),$0
     )
 })
 }
     
 open func firstIndex() -> UInt64 {
     return try!  FfiConverterUInt64.lift(try! rustCall() {
-    uniffi_libafl_fuzzilli_fn_method_fzilondiskcorpusbytes_first_index(self.uniffiClonePointer(),$0
+    uniffi_libafl_fuzzilli_fn_method_libaflobject_first_index(self.uniffiClonePointer(),$0
     )
 })
 }
     
-open func getElement(corpusId: UInt64) -> Data {
+open func getElement(id: UInt64) -> Data {
     return try!  FfiConverterData.lift(try! rustCall() {
-    uniffi_libafl_fuzzilli_fn_method_fzilondiskcorpusbytes_get_element(self.uniffiClonePointer(),
-        FfiConverterUInt64.lower(corpusId),$0
+    uniffi_libafl_fuzzilli_fn_method_libaflobject_get_element(self.uniffiClonePointer(),
+        FfiConverterUInt64.lower(id),$0
     )
 })
-}
-    
-open func getRandomElement() -> Data {
-    return try!  FfiConverterData.lift(try! rustCall() {
-    uniffi_libafl_fuzzilli_fn_method_fzilondiskcorpusbytes_get_random_element(self.uniffiClonePointer(),$0
-    )
-})
-}
-    
-open func ids() {try! rustCall() {
-    uniffi_libafl_fuzzilli_fn_method_fzilondiskcorpusbytes_ids(self.uniffiClonePointer(),$0
-    )
-}
 }
     
 open func lastIndex() -> UInt64 {
     return try!  FfiConverterUInt64.lift(try! rustCall() {
-    uniffi_libafl_fuzzilli_fn_method_fzilondiskcorpusbytes_last_index(self.uniffiClonePointer(),$0
+    uniffi_libafl_fuzzilli_fn_method_libaflobject_last_index(self.uniffiClonePointer(),$0
     )
 })
 }
     
-open func nextFree() {try! rustCall() {
-    uniffi_libafl_fuzzilli_fn_method_fzilondiskcorpusbytes_next_free(self.uniffiClonePointer(),$0
+open func suggestNextInput() -> Data {
+    return try!  FfiConverterData.lift(try! rustCall() {
+    uniffi_libafl_fuzzilli_fn_method_libaflobject_suggest_next_input(self.uniffiClonePointer(),$0
     )
-}
+})
 }
     
 
 }
 
-public struct FfiConverterTypeFzilOnDiskCorpusBytes: FfiConverter {
+public struct FfiConverterTypeLibAflObject: FfiConverter {
 
     typealias FfiType = UnsafeMutableRawPointer
-    typealias SwiftType = FzilOnDiskCorpusBytes
+    typealias SwiftType = LibAflObject
 
-    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> FzilOnDiskCorpusBytes {
-        return FzilOnDiskCorpusBytes(unsafeFromRawPointer: pointer)
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> LibAflObject {
+        return LibAflObject(unsafeFromRawPointer: pointer)
     }
 
-    public static func lower(_ value: FzilOnDiskCorpusBytes) -> UnsafeMutableRawPointer {
+    public static func lower(_ value: LibAflObject) -> UnsafeMutableRawPointer {
         return value.uniffiClonePointer()
     }
 
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> FzilOnDiskCorpusBytes {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> LibAflObject {
         let v: UInt64 = try readInt(&buf)
         // The Rust code won't compile if a pointer won't fit in a UInt64.
         // We have to go via `UInt` because that's the thing that's the size of a pointer.
@@ -600,7 +592,7 @@ public struct FfiConverterTypeFzilOnDiskCorpusBytes: FfiConverter {
         return try lift(ptr!)
     }
 
-    public static func write(_ value: FzilOnDiskCorpusBytes, into buf: inout [UInt8]) {
+    public static func write(_ value: LibAflObject, into buf: inout [UInt8]) {
         // This fiddling is because `Int` is the thing that's the same size as a pointer.
         // The Rust code won't compile if a pointer won't fit in a `UInt64`.
         writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
@@ -610,139 +602,12 @@ public struct FfiConverterTypeFzilOnDiskCorpusBytes: FfiConverter {
 
 
 
-public func FfiConverterTypeFzilOnDiskCorpusBytes_lift(_ pointer: UnsafeMutableRawPointer) throws -> FzilOnDiskCorpusBytes {
-    return try FfiConverterTypeFzilOnDiskCorpusBytes.lift(pointer)
+public func FfiConverterTypeLibAflObject_lift(_ pointer: UnsafeMutableRawPointer) throws -> LibAflObject {
+    return try FfiConverterTypeLibAflObject.lift(pointer)
 }
 
-public func FfiConverterTypeFzilOnDiskCorpusBytes_lower(_ value: FzilOnDiskCorpusBytes) -> UnsafeMutableRawPointer {
-    return FfiConverterTypeFzilOnDiskCorpusBytes.lower(value)
-}
-
-
-
-
-public protocol MyFzilSchedulerProtocol : AnyObject {
-    
-    func addInput(inputData: Data) 
-    
-    func currentTestcase()  -> Data
-    
-    func nextInput()  -> Data
-    
-}
-
-open class MyFzilScheduler:
-    MyFzilSchedulerProtocol {
-    fileprivate let pointer: UnsafeMutableRawPointer!
-
-    /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
-    public struct NoPointer {
-        public init() {}
-    }
-
-    // TODO: We'd like this to be `private` but for Swifty reasons,
-    // we can't implement `FfiConverter` without making this `required` and we can't
-    // make it `required` without making it `public`.
-    required public init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
-        self.pointer = pointer
-    }
-
-    /// This constructor can be used to instantiate a fake object.
-    /// - Parameter noPointer: Placeholder value so we can have a constructor separate from the default empty one that may be implemented for classes extending [FFIObject].
-    ///
-    /// - Warning:
-    ///     Any object instantiated with this constructor cannot be passed to an actual Rust-backed object. Since there isn't a backing [Pointer] the FFI lower functions will crash.
-    public init(noPointer: NoPointer) {
-        self.pointer = nil
-    }
-
-    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
-        return try! rustCall { uniffi_libafl_fuzzilli_fn_clone_myfzilscheduler(self.pointer, $0) }
-    }
-public convenience init() {
-    let pointer =
-        try! rustCall() {
-    uniffi_libafl_fuzzilli_fn_constructor_myfzilscheduler_new($0
-    )
-}
-    self.init(unsafeFromRawPointer: pointer)
-}
-
-    deinit {
-        guard let pointer = pointer else {
-            return
-        }
-
-        try! rustCall { uniffi_libafl_fuzzilli_fn_free_myfzilscheduler(pointer, $0) }
-    }
-
-    
-
-    
-open func addInput(inputData: Data) {try! rustCall() {
-    uniffi_libafl_fuzzilli_fn_method_myfzilscheduler_add_input(self.uniffiClonePointer(),
-        FfiConverterData.lower(inputData),$0
-    )
-}
-}
-    
-open func currentTestcase() -> Data {
-    return try!  FfiConverterData.lift(try! rustCall() {
-    uniffi_libafl_fuzzilli_fn_method_myfzilscheduler_current_testcase(self.uniffiClonePointer(),$0
-    )
-})
-}
-    
-open func nextInput() -> Data {
-    return try!  FfiConverterData.lift(try! rustCall() {
-    uniffi_libafl_fuzzilli_fn_method_myfzilscheduler_next_input(self.uniffiClonePointer(),$0
-    )
-})
-}
-    
-
-}
-
-public struct FfiConverterTypeMyFzilScheduler: FfiConverter {
-
-    typealias FfiType = UnsafeMutableRawPointer
-    typealias SwiftType = MyFzilScheduler
-
-    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> MyFzilScheduler {
-        return MyFzilScheduler(unsafeFromRawPointer: pointer)
-    }
-
-    public static func lower(_ value: MyFzilScheduler) -> UnsafeMutableRawPointer {
-        return value.uniffiClonePointer()
-    }
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> MyFzilScheduler {
-        let v: UInt64 = try readInt(&buf)
-        // The Rust code won't compile if a pointer won't fit in a UInt64.
-        // We have to go via `UInt` because that's the thing that's the size of a pointer.
-        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
-        if (ptr == nil) {
-            throw UniffiInternalError.unexpectedNullPointer
-        }
-        return try lift(ptr!)
-    }
-
-    public static func write(_ value: MyFzilScheduler, into buf: inout [UInt8]) {
-        // This fiddling is because `Int` is the thing that's the same size as a pointer.
-        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
-        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
-    }
-}
-
-
-
-
-public func FfiConverterTypeMyFzilScheduler_lift(_ pointer: UnsafeMutableRawPointer) throws -> MyFzilScheduler {
-    return try FfiConverterTypeMyFzilScheduler.lift(pointer)
-}
-
-public func FfiConverterTypeMyFzilScheduler_lower(_ value: MyFzilScheduler) -> UnsafeMutableRawPointer {
-    return FfiConverterTypeMyFzilScheduler.lower(value)
+public func FfiConverterTypeLibAflObject_lower(_ value: LibAflObject) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeLibAflObject.lower(value)
 }
 
 private enum InitializationResult {
@@ -760,43 +625,25 @@ private var initializationResult: InitializationResult {
     if bindings_contract_version != scaffolding_contract_version {
         return InitializationResult.contractVersionMismatch
     }
-    if (uniffi_libafl_fuzzilli_checksum_method_fzilondiskcorpusbytes_add_input() != 46175) {
+    if (uniffi_libafl_fuzzilli_checksum_method_libaflobject_add_input() != 46466) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_libafl_fuzzilli_checksum_method_fzilondiskcorpusbytes_count() != 63954) {
+    if (uniffi_libafl_fuzzilli_checksum_method_libaflobject_count() != 11344) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_libafl_fuzzilli_checksum_method_fzilondiskcorpusbytes_first_index() != 21902) {
+    if (uniffi_libafl_fuzzilli_checksum_method_libaflobject_first_index() != 18061) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_libafl_fuzzilli_checksum_method_fzilondiskcorpusbytes_get_element() != 13914) {
+    if (uniffi_libafl_fuzzilli_checksum_method_libaflobject_get_element() != 62008) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_libafl_fuzzilli_checksum_method_fzilondiskcorpusbytes_get_random_element() != 13233) {
+    if (uniffi_libafl_fuzzilli_checksum_method_libaflobject_last_index() != 3131) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_libafl_fuzzilli_checksum_method_fzilondiskcorpusbytes_ids() != 49339) {
+    if (uniffi_libafl_fuzzilli_checksum_method_libaflobject_suggest_next_input() != 32371) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_libafl_fuzzilli_checksum_method_fzilondiskcorpusbytes_last_index() != 26701) {
-        return InitializationResult.apiChecksumMismatch
-    }
-    if (uniffi_libafl_fuzzilli_checksum_method_fzilondiskcorpusbytes_next_free() != 20571) {
-        return InitializationResult.apiChecksumMismatch
-    }
-    if (uniffi_libafl_fuzzilli_checksum_method_myfzilscheduler_add_input() != 1322) {
-        return InitializationResult.apiChecksumMismatch
-    }
-    if (uniffi_libafl_fuzzilli_checksum_method_myfzilscheduler_current_testcase() != 5818) {
-        return InitializationResult.apiChecksumMismatch
-    }
-    if (uniffi_libafl_fuzzilli_checksum_method_myfzilscheduler_next_input() != 1500) {
-        return InitializationResult.apiChecksumMismatch
-    }
-    if (uniffi_libafl_fuzzilli_checksum_constructor_fzilondiskcorpusbytes_new() != 7767) {
-        return InitializationResult.apiChecksumMismatch
-    }
-    if (uniffi_libafl_fuzzilli_checksum_constructor_myfzilscheduler_new() != 21843) {
+    if (uniffi_libafl_fuzzilli_checksum_constructor_libaflobject_new() != 41684) {
         return InitializationResult.apiChecksumMismatch
     }
 
