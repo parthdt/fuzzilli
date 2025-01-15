@@ -451,9 +451,6 @@ public struct JSTyper: Analyzer {
         }
 
         switch instr.op.opcode {
-        case .loadBuiltin(let op):
-            set(instr.output, environment.type(ofBuiltin: op.builtinName))
-
         case .loadInteger:
             set(instr.output, environment.intType)
 
@@ -480,6 +477,21 @@ public struct JSTyper: Analyzer {
 
         case .loadArguments:
             set(instr.output, environment.argumentsType)
+
+        case .createNamedVariable(let op):
+            if op.hasInitialValue {
+                set(instr.output, type(ofInput: 0))
+            } else if (environment.hasBuiltin(op.variableName)) {
+                set(instr.output, environment.type(ofBuiltin: op.variableName))
+            } else {
+                set(instr.output, .anything)
+            }
+
+        case .loadDisposableVariable:
+            set(instr.output, type(ofInput: 0))
+
+        case .loadAsyncDisposableVariable:
+            set(instr.output, type(ofInput: 0))
 
         case .loadNewTarget:
             set(instr.output, .function() | .undefined)
@@ -727,10 +739,6 @@ public struct JSTyper: Analyzer {
 
         case .compare:
             set(instr.output, .boolean)
-
-        case .loadNamedVariable:
-            // We don't currently track these.
-            set(instr.output, .anything)
 
         case .await:
             // TODO if input type is known, set to input type and possibly unwrap the Promise
