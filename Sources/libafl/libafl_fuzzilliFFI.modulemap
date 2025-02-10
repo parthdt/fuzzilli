@@ -1,0 +1,4 @@
+module libafl_fuzzilliFFI {
+    header "libafl_fuzzilliFFI.h"
+    export *
+}

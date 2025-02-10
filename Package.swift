@@ -16,6 +16,7 @@
 
 import PackageDescription
 
+let path = "/home/dresden/optfuzzilli/fuzzilli"
 let package = Package(
     name: "Fuzzilli",
     platforms: [
@@ -40,13 +41,13 @@ let package = Package(
                 linkerSettings: [.linkedLibrary("rt", .when(platforms: [.linux]))]),
         
         .target(    
-                name:"libpc",
-                path:"Sources/libpc",
+                name:"libafl",
+                path:"Sources/libafl",
                 swiftSettings: [
-                    .unsafeFlags(["-I/home/dresden/fuzzing/fuzzilli/Sources/libpc","-Xcc","-fmodule-map-file=/home/dresden/fuzzing/fuzzilli/Sources/libpc/parth_corpusFFI.modulemap"]),  // Adjust paths as necessary
+                    .unsafeFlags(["-I\(path)/Sources/libafl","-Xcc","-fmodule-map-file=\(path)/Sources/libafl/libafl_fuzzilliFFI.modulemap"]),  // Adjust paths as necessary
                 ],
                 linkerSettings: [
-                    .unsafeFlags(["-L/home/dresden/fuzzing/fuzzilli/Sources/libpc", "-lparth_corpus"])]
+                    .unsafeFlags(["-L\(path)/Sources/libafl", "-llibafl_fuzzilli"])]
 
         ),
 
@@ -56,7 +57,7 @@ let package = Package(
                     "libsocket",
                     "libreprl",
                     "libcoverage",
-                    "libpc"],
+                    "libafl"],
 
                 exclude: [
                     "Protobuf/operations.proto",
@@ -69,11 +70,11 @@ let package = Package(
                     .copy("Protobuf/ast.proto"),
                     .copy("Compiler/Parser")],
                swiftSettings: [
-                    .unsafeFlags(["-I/home/dresden/fuzzing/fuzzilli/Sources/libpc","-Xcc","-fmodule-map-file=/home/dresden/fuzzing/fuzzilli/Sources/libpc/parth_corpusFFI.modulemap"]),  // Adjust paths as necessary
+                    .unsafeFlags(["-I\(path)/Sources/libafl","-Xcc","-fmodule-map-file=\(path)/Sources/libafl/libafl_fuzzilliFFI.modulemap"]),  // Adjust paths as necessary
                 ],
                 linkerSettings: [
-                    .linkedLibrary("parth_corpus"),
-                    .unsafeFlags(["-L/home/dresden/fuzzing/fuzzilli/Sources/libpc", "-lpc"])]),
+                    .linkedLibrary("libafl_fuzzilli"),
+                    .unsafeFlags(["-L\(path)/Sources/libafl", "-lafl"])]),
 
         .target(name: "REPRLRun",
                 dependencies: ["libreprl"]),
@@ -81,21 +82,21 @@ let package = Package(
     .target(name: "FuzzilliCli",
                 dependencies: ["Fuzzilli"],
                 swiftSettings: [
-                    .unsafeFlags(["-I/home/dresden/fuzzing/fuzzilli/Sources/libpc","-Xcc","-fmodule-map-file=/home/dresden/fuzzing/fuzzilli/Sources/libpc/parth_corpusFFI.modulemap"]),  // Adjust paths as necessary
+                    .unsafeFlags(["-I\(path)/Sources/libafl","-Xcc","-fmodule-map-file=\(path)/Sources/libafl/libafl_fuzzilliFFI.modulemap"]),  // Adjust paths as necessary
                 ],
                 linkerSettings: [
-                    .linkedLibrary("parth_corpus"),
-                    .unsafeFlags(["-L/home/dresden/fuzzing/fuzzilli/Sources/libpc", "-lpc"])]
+                    .linkedLibrary("libafl_fuzzilli"),
+                    .unsafeFlags(["-L\(path)/Sources/libafl", "-lafl"])]
                 ),
 
         .target(name: "FuzzILTool",
                 dependencies: ["Fuzzilli"],
                 swiftSettings: [
-                    .unsafeFlags(["-I/home/dresden/fuzzing/fuzzilli/Sources/libpc","-Xcc","-fmodule-map-file=/home/dresden/fuzzing/fuzzilli/Sources/libpc/parth_corpusFFI.modulemap"]),  // Adjust paths as necessary
+                    .unsafeFlags(["-I\(path)/Sources/libafl","-Xcc","-fmodule-map-file=\(path)/Sources/libafl/libafl_fuzzilliFFI.modulemap"]),  // Adjust paths as necessary
                 ],
                 linkerSettings: [
-                    // .linkedLibrary("parth_corpus"),
-                    .unsafeFlags(["-L/home/dresden/fuzzing/fuzzilli/Sources/libpc", "-lpc"])]
+                    // .linkedLibrary("libafl_fuzzilli"),
+                    .unsafeFlags(["-L\(path)/Sources/libafl", "-lafl"])]
                 ),
 
         .testTarget(name: "FuzzilliTests",
