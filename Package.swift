@@ -16,7 +16,7 @@
 
 import PackageDescription
 
-let path = "/home/dresden/optfuzzilli/fuzzilli"
+let path = "/home/builder/fuzzilli"
 let package = Package(
     name: "Fuzzilli",
     platforms: [
@@ -95,13 +95,20 @@ let package = Package(
                     .unsafeFlags(["-I\(path)/Sources/libafl","-Xcc","-fmodule-map-file=\(path)/Sources/libafl/libafl_fuzzilliFFI.modulemap"]),  // Adjust paths as necessary
                 ],
                 linkerSettings: [
-                    // .linkedLibrary("libafl_fuzzilli"),
+                    .linkedLibrary("libafl_fuzzilli"),
                     .unsafeFlags(["-L\(path)/Sources/libafl", "-lafl"])]
                 ),
 
         .testTarget(name: "FuzzilliTests",
                     dependencies: ["Fuzzilli"],
-                    resources: [.copy("CompilerTests")]),
+                    resources: [.copy("CompilerTests")],
+                    swiftSettings: [
+                    .unsafeFlags(["-I\(path)/Sources/libafl","-Xcc","-fmodule-map-file=\(path)/Sources/libafl/libafl_fuzzilliFFI.modulemap"]),  // Adjust paths as necessary
+                ],
+                linkerSettings: [
+                    .linkedLibrary("libafl_fuzzilli"),
+                    .unsafeFlags(["-L\(path)/Sources/libafl", "-lafl"])]
+                ),
     ],
     swiftLanguageVersions: [.v5]
 )

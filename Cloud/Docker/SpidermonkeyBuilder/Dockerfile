@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV SHELL=bash
 
 RUN apt-get -y update && apt-get -y upgrade
-RUN apt-get install -y git python3 python3-pip python3-virtualenv
+RUN apt-get install -y git python3 python3-pip
 
 RUN useradd -m builder
 
@@ -26,13 +26,12 @@ RUN apt-get -y update && apt-get -y upgrade
 RUN git pull
 RUN git checkout $rev
 
-# Prepare for building
 RUN ./mach bootstrap --application-choice=js
-
 # Upload and apply patches
-ADD Patches Patches
-RUN for i in `ls Patches`; do patch -p1 < Patches/$i; done
+# ADD Patches Patches
+# RUN for i in `ls Patches`; do patch -p1 < Patches/$i; done
 
+WORKDIR /home/builder/firefox
 # Start building!
 ADD fuzzbuild.sh fuzzbuild.sh
 RUN ./fuzzbuild.sh

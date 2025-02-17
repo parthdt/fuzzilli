@@ -11,7 +11,7 @@ cp -R $FUZZILLI_ROOT/Targets/Spidermonkey/Patches .
 cp $FUZZILLI_ROOT/Targets/Spidermonkey/fuzzbuild.sh .
 
 # Fetch the source code, apply patches, and compile the engine
-docker build --build-arg rev=$REV -t spidermonkey_builder .
+docker build -t spidermonkey_builder .
 
 # Copy build products
 mkdir -p out

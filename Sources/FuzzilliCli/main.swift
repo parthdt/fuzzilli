@@ -180,7 +180,7 @@ guard validEngines.contains(engineName) else {
     configError("--engine must be one of \(validEngines)")
 }
 
-let validCorpora = ["basic", "markov", "parth"]
+let validCorpora = ["basic", "markov", "pss", "qs", "cas", "iltms"]
 guard validCorpora.contains(corpusName) else {
     configError("--corpus must be one of \(validCorpora)")
 }
@@ -479,8 +479,14 @@ func makeFuzzer(with configuration: Configuration) -> Fuzzer {
     switch corpusName {
     case "basic":
         corpus = BasicCorpus(minSize: minCorpusSize, maxSize: maxCorpusSize, minMutationsPerSample: minMutationsPerSample)
-    case "parth":
-        corpus = ParthCorpus(minSize: minCorpusSize, maxSize: maxCorpusSize, minMutationsPerSample: minMutationsPerSample)
+    case "pss":
+        corpus = PSSCorpus(minSize: minCorpusSize, maxSize: maxCorpusSize, minMutationsPerSample: minMutationsPerSample)
+    case "qs":
+        corpus = QSCorpus(minSize: minCorpusSize, maxSize: maxCorpusSize, minMutationsPerSample: minMutationsPerSample)
+    case "iltms":
+        corpus = ILTMSCorpus(minSize: minCorpusSize, maxSize: maxCorpusSize, minMutationsPerSample: minMutationsPerSample)
+    case "cas":
+        corpus = CASCorpus(minSize: minCorpusSize, maxSize: maxCorpusSize, minMutationsPerSample: minMutationsPerSample)
     case "markov":
         corpus = MarkovCorpus(covEvaluator: evaluator as ProgramCoverageEvaluator, dropoutRate: markovDropoutRate)
     default:
