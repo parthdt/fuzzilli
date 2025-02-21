@@ -28,8 +28,8 @@ RUN git checkout $rev
 
 RUN ./mach bootstrap --application-choice=js
 # Upload and apply patches
-# ADD Patches Patches
-# RUN for i in `ls Patches`; do patch -p1 < Patches/$i; done
+ADD Patches Patches
+RUN for i in `ls Patches`; do patch -p1 < Patches/$i || true; done
 
 WORKDIR /home/builder/firefox
 # Start building!

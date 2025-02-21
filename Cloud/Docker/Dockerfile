@@ -29,5 +29,7 @@ ADD Corpus corpus
 # Add Fuzzilli binaries
 ADD FuzzilliBuilder/out/Fuzzilli Fuzzilli
 ADD FuzzilliBuilder/out/REPRLRun REPRLRun
+ADD FuzzilliBuilder/out/libafl libafl
 
+ENV LD_LIBRARY_PATH="/home/fuzzer/libafl:/usr/lib/swift/linux/"
 RUN mkdir fuzz

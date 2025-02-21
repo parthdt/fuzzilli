@@ -11,7 +11,7 @@ cp -R $FUZZILLI_ROOT/Targets/JavaScriptCore/Patches .
 cp $FUZZILLI_ROOT/Targets/JavaScriptCore/fuzzbuild.sh .
 
 # Fetch the source code, apply patches, and compile the engine
-docker build --build-arg rev=$REV -t jsc_builder .
+docker build -t jsc_builder .
 
 # Copy build products
 mkdir -p out

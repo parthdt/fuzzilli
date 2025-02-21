@@ -27,11 +27,11 @@ RUN apt-get -y update && apt-get -y upgrade
 
 # Fetch latest source code and checkout requested source revision
 RUN git pull
-RUN git checkout $rev
+RUN git checkout main
 
 # Upload and apply patches
 ADD Patches Patches
-RUN for i in `ls Patches`; do patch -p1 < Patches/$i; done
+RUN for i in `ls Patches`; do patch -p1 < Patches/$i || true ; done
 
 # Start building!
 ADD fuzzbuild.sh fuzzbuild.sh

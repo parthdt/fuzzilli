@@ -7,7 +7,6 @@ FUZZILLI_ROOT=../../..
 
 # Setup build context
 REV=$(cat $FUZZILLI_ROOT/Targets/V8/REVISION)
-cp -R $FUZZILLI_ROOT/Targets/V8/Patches .
 cp $FUZZILLI_ROOT/Targets/V8/fuzzbuild.sh .
 
 # Fetch the source code, apply patches, and compile the engine
