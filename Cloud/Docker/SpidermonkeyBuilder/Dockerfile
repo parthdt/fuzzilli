@@ -3,8 +3,8 @@ FROM swift:latest
 ENV DEBIAN_FRONTEND=noninteractive
 ENV SHELL=bash
 
-RUN apt-get -y update && apt-get -y upgrade
-RUN apt-get install -y git python3 python3-pip
+RUN apt -y update && apt -y upgrade
+RUN apt install -y git python3 python3-pip
 
 RUN useradd -m builder
 
@@ -17,19 +17,16 @@ WORKDIR /home/builder/firefox
 # (i.e. we are building a new version of the engine), a cache miss occurs (because the build context changed) and all
 # steps from here on are rerun. That, however, means we might be operating on an old checkout of the source code from
 # the cache, and so we update it again before checking out the requested revision.
-ARG rev=master
 
 # Update system packages first
-RUN apt-get -y update && apt-get -y upgrade
+RUN apt -y update && apt -y upgrade
 
 # Fetch latest source code and checkout requested source revision
 RUN git pull
-RUN git checkout $rev
+#RUN git checkout $rev
 
 RUN ./mach bootstrap --application-choice=js
 # Upload and apply patches
-ADD Patches Patches
-RUN for i in `ls Patches`; do patch -p1 < Patches/$i || true; done
 
 WORKDIR /home/builder/firefox
 # Start building!
