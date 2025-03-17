@@ -27,7 +27,7 @@ RUN apt-get -y update && apt-get -y upgrade
 
 # Fetch latest source code and checkout requested source revision
 RUN git pull
-RUN git checkout main
+RUN git checkout $rev
 
 # Upload and apply patches
 ADD Patches Patches

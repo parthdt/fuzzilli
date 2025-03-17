@@ -6,7 +6,7 @@ ENV SHELL=bash
 RUN apt -y update && apt -y upgrade
 RUN apt install -y git python3 python3-pip
 
-RUN useradd -m builder
+RUN useradd -l -m builder
 
 # Fetch Firefox source code
 RUN git clone https://github.com/mozilla/gecko-dev.git /home/builder/firefox
