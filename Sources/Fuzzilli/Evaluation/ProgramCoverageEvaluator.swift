@@ -97,7 +97,7 @@ public class ProgramCoverageEvaluator: ComponentBase, ProgramEvaluator {
         self.shouldTrackEdgeCounts = false
 
         super.init(name: "Coverage")
-
+        print("\n\nCurrent instance count: \(ProgramCoverageEvaluator.instances)")
         let id = ProgramCoverageEvaluator.instances
         ProgramCoverageEvaluator.instances += 1
 

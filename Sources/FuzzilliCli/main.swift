@@ -480,13 +480,13 @@ func makeFuzzer(with configuration: Configuration) -> Fuzzer {
     case "basic":
         corpus = BasicCorpus(minSize: minCorpusSize, maxSize: maxCorpusSize, minMutationsPerSample: minMutationsPerSample)
     case "pss":
-        corpus = PSSCorpus(minSize: minCorpusSize, maxSize: maxCorpusSize, minMutationsPerSample: minMutationsPerSample)
+        corpus = PSSCorpus(minSize: minCorpusSize, maxSize: maxCorpusSize, minMutationsPerSample: minMutationsPerSample, storagepath: storagePath ?? "")
     case "qs":
-        corpus = QSCorpus(minSize: minCorpusSize, maxSize: maxCorpusSize, minMutationsPerSample: minMutationsPerSample)
+        corpus = QSCorpus(minSize: minCorpusSize, maxSize: maxCorpusSize, minMutationsPerSample: minMutationsPerSample, storagepath: storagePath ?? "")
     case "iltms":
-        corpus = ILTMSCorpus(minSize: minCorpusSize, maxSize: maxCorpusSize, minMutationsPerSample: minMutationsPerSample)
+        corpus = ILTMSCorpus(minSize: minCorpusSize, maxSize: maxCorpusSize, minMutationsPerSample: minMutationsPerSample, storagepath: storagePath ?? "")
     case "cas":
-        corpus = CASCorpus(minSize: minCorpusSize, maxSize: maxCorpusSize, minMutationsPerSample: minMutationsPerSample)
+        corpus = CASCorpus(minSize: minCorpusSize, maxSize: maxCorpusSize, minMutationsPerSample: minMutationsPerSample, storagepath: storagePath ?? "")
     case "markov":
         corpus = MarkovCorpus(covEvaluator: evaluator as ProgramCoverageEvaluator, dropoutRate: markovDropoutRate)
     default:

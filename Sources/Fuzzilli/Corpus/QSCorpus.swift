@@ -20,27 +20,36 @@ public class QSCorpus: ComponentBase, Collection, Corpus {
     /// The underlying LibAFL object.
     private var libaflObject: LibAflObject
 
-    public init(minSize: Int, maxSize: Int, minMutationsPerSample: Int) {
-        // The corpus must never be empty. Other components, such as the ProgramBuilder, rely on this.
-        assert(minSize >= 1)
-        assert(maxSize >= minSize)
-        self.minSize = minSize
-        self.minMutationsPerSample = minMutationsPerSample
+    public init(minSize: Int, maxSize: Int, minMutationsPerSample: Int, storagepath: String) {
+    // The corpus must never be empty. Other components, such as the ProgramBuilder, rely on this.
+    assert(minSize >= 1)
+    assert(maxSize >= minSize)
+    self.minSize = minSize
+    self.minMutationsPerSample = minMutationsPerSample
 
-        self.programs = RingBuffer(maxSize: maxSize)
-        self.ages = RingBuffer(maxSize: maxSize)
+    self.programs = RingBuffer(maxSize: maxSize)
+    self.ages = RingBuffer(maxSize: maxSize)
 
-        // Create the shared memory ID for the LibAFL object.
-        #if os(Windows)
-        let shmID = "shm_id_\(GetCurrentProcessId())_0"
-        #else
-        let shmID = "shm_id_\(getpid())_0"
-        #endif
+    // Create the shared memory ID for the LibAFL object.
+    #if os(Windows)
+    let shmID = "shm_id_\(GetCurrentProcessId())_0"
+    #else
+    let shmID = "shm_id_\(getpid())_0"
+    #endif
 
-        // Initialize the LibAFL object with the shared memory ID and a dummy corpus directory.
-        self.libaflObject = LibAflObject(corpusDir: "pcorpus", shmemKey: shmID, schedulerType: 2)
-        super.init(name: "Corpus")
+    // Determine the corpus directory based on whether storagepath is empty.
+    let corpusDir: String
+    if storagepath.isEmpty {
+        corpusDir = "pcorpus"
+    } else {
+        corpusDir = "\(storagepath)/pcorpus"
     }
+
+    // Initialize the LibAFL object with the determined corpus directory and shared memory ID.
+    self.libaflObject = LibAflObject(corpusDir: corpusDir, shmemKey: shmID, schedulerType: 2)
+    super.init(name: "Corpus")
+    }
+
 
     override func initialize() {
         // Schedule a timer to perform cleanup regularly, but only if we're not running as static corpus.
