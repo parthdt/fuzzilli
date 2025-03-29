@@ -21,5 +21,4 @@ docker cp temp_container:/home/builder/v8/out/fuzzbuild/icudtl.dat out/icudtl.da
 docker rm temp_container
 
 # Clean up
-rm -r Patches
 rm fuzzbuild.sh
